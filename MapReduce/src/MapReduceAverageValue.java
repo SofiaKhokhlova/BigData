@@ -36,7 +36,7 @@ public class MapReduceAverageValue {
 
         // adding tasks to threads to calculate the average value and adding threads to the pool
         for(int [] array: chunkedArrays){
-            threads.add(() -> Arrays.stream(array).average().orElse(0.0))
+            threads.add(() -> Arrays.stream(array).average().orElse(0.0));
         }
 
         List<Future<Double>> futures = executorService.invokeAll(threads); // start all threads and get results
