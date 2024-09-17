@@ -1,6 +1,6 @@
 public class StandardAverageValue {
 
-    // Метод творення масиву розмірністю n
+    // Method for creating an array size n
     public static int[] createArray(int n) {
         int[] array = new int[n];
 
@@ -11,7 +11,7 @@ public class StandardAverageValue {
         return array;
     }
 
-    // Метод для стандартного обчислення середнього значення в масиві
+    // Method for standard calculation of the average value in an array
     public static double standardAverageValue(int[] array){
         double result = 0;
 
@@ -31,7 +31,7 @@ public class StandardAverageValue {
 
         System.out.println("Standard average value: " + standardResult);
         System.out.println("Elapsed time: " + (end - start) + "ms");
-        // Елементів: 10000, Час: 0мс, 0мс, 0мс
-        // Елементів: 10000000, Час: 16мс, 17мс, 18мс
+        // Elements: 10000, Time: 0мс, 0мс, 0мс
+        // Elements: 10000000, Time: 16мс, 17мс, 18мс
     }
 }

@@ -5,7 +5,7 @@ import java.util.concurrent.*;
 
 public class MapReduceAverageValue {
 
-    // Метод творення масиву розмірністю n
+    // Method for creating an array size n
     public static int[] createArray(int n) {
         int[] array = new int[n];
 
@@ -16,43 +16,43 @@ public class MapReduceAverageValue {
         return array;
     }
 
-    // Метод для розбиття массиву на частини для подальшої паралельної обробки
+    // Method for splitting an array into parts for further parallel processing
     public static List<int[]> map(int[] array, int numThreads){
-        List<int[]> chunkedArrays = new ArrayList<>(); // список для зберігання частин масиву
-        int sizeChunk = array.length / numThreads; // розмір кожної частини
+        List<int[]> chunkedArrays = new ArrayList<>(); // list for storing parts of the array
+        int sizeChunk = array.length / numThreads; // the size of each part
 
         for(int i = 0; i < array.length; i += sizeChunk) {
-            int end = Math.min(array.length, i + sizeChunk); // визначення кінця підмасиву
-            chunkedArrays.add(Arrays.copyOfRange(array, i, end)); // додавання підмасиву до списку
+            int end = Math.min(array.length, i + sizeChunk); // determining the end of the subarray
+            chunkedArrays.add(Arrays.copyOfRange(array, i, end)); // adding a subarray to the list
         }
 
-        return chunkedArrays; // повертаємо список підмасивів
+        return chunkedArrays; // return the list of subarrays
     }
 
-    // Метод для паралельного обчислення середнього значення кожного підмасиву та їх об'єдання
+    // A method for parallel calculation of the average value of each subarray and their combining
     public static double reduce(List<int[]> chunkedArrays) throws InterruptedException, ExecutionException{
-        ExecutorService executorService = Executors.newFixedThreadPool(chunkedArrays.size()); // пул потоків
-        List<Callable<Double>> threads = new ArrayList<>(); // список потоків для паралельного виконання
+        ExecutorService executorService = Executors.newFixedThreadPool(chunkedArrays.size()); // thread pool
+        List<Callable<Double>> threads = new ArrayList<>(); // list of threads for parallel execution
 
-        // додавання потокам завдань для обчислення середнього значення та додавання потоків до пулу
+        // adding tasks to threads to calculate the average value and adding threads to the pool
         for(int [] array: chunkedArrays){
-            threads.add(() -> Arrays.stream(array).average().orElse(0.0));
+            threads.add(() -> Arrays.stream(array).average().orElse(0.0))
         }
 
-        List<Future<Double>> futures = executorService.invokeAll(threads); // запуск усіх потоків та отримання результатів
+        List<Future<Double>> futures = executorService.invokeAll(threads); // start all threads and get results
         double totalSum = 0;
 
         for(Future<Double> future: futures) {
-            totalSum += future.get(); // отримані результати складаємо
+            totalSum += future.get(); // add up the results
         }
 
-        executorService.shutdown(); // закриваємо пул потоків
+        executorService.shutdown(); // close the thread pool
 
-        return totalSum / chunkedArrays.size(); // повертаємо середне значення
+        return totalSum / chunkedArrays.size(); // return the average value
     }
 
     public static void main(String[] args) throws InterruptedException, ExecutionException {
-        int numThreads = Runtime.getRuntime().availableProcessors(); // кількість доступних процесорів (4)
+        int numThreads = Runtime.getRuntime().availableProcessors(); // number of available processors (4)
         int[] array = createArray(10000000);
 
         long start = System.currentTimeMillis();
@@ -60,9 +60,9 @@ public class MapReduceAverageValue {
         double mapReduceResult = reduce(chunkedArrays);
         long end = System.currentTimeMillis();
 
-        System.out.println("MapReduce average value: " + mapReduceResult);
+        System.out.println("Average value of MapReduce: " + mapReduceResult);
         System.out.println("Elapsed time: " + (end - start) + "ms");
-        // Елементів: 10000, Потоків: 3, Час: 18мс, 18мс, 16мс
-        // Елементів: 10000000, Потоків: 4, Час: 94мс, 114мс, 92мс
+        // Elements: 10000, Threads: 3, Time: 18ms, 18ms, 16ms
+        // Elements: 10000000, Threads: 4, Time: 94ms, 114ms, 92ms
     }
 }
